@@ -1,0 +1,40 @@
+plugins {
+    id 'java-gradle-plugin'
+    id "net.ltgt.errorprone" version "2.0.2"
+    id 'idea'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    google()
+    gradlePluginPortal()
+}
+
+dependencies {
+    annotationProcessor "com.uber.nullaway:nullaway:$nullawayVersion"
+    compileOnly "com.google.code.findbugs:jsr305:$findbugsJsr305Version"
+    errorprone "com.google.errorprone:error_prone_core:$errorProneCoreVersion"
+    errorproneJavac "com.google.errorprone:javac:$errorproneJavacVersion"
+
+    implementation "org.apache.commons:commons-lang3:$commonsLang3Version"
+}
+
+tasks.withType(JavaCompile) {
+        options.errorprone {
+            check("NullAway", net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
+            option("NullAway:AnnotatedPackages", "org.bytesandmonkeys")
+        }
+}
+
+group 'org.bytesandmonkeys'
+version '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
